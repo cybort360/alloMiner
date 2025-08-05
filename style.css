@@ -70,17 +70,12 @@ button:active {
 
 #clickButton {
   display: none;
+  touch-action: manipulation;
 }
 
 #tweetButton {
   display: none;
   background-color: #1da1f2;
-}
-
-#clickButton,
-#startButton,
-#tweetButton {
-  font-size: 16px !important;
 }
 
 #alloCount {
