@@ -30,7 +30,7 @@ startBtn.addEventListener('click', () => {
   tweetBtn.style.display = 'none';
 
   clearInterval(countdown);
-  clearInterval(multiplierInterval); // Stop any running boost interval
+  clearInterval(multiplierInterval);
 
   countdown = setInterval(() => {
     timeLeft--;
@@ -43,7 +43,6 @@ startBtn.addEventListener('click', () => {
       tweetBtn.style.display = 'inline-block';
       message.textContent = `Time's up! You mined ${allo} $ALLO. Tweet your score to try again.`;
 
-      // Trigger confetti
       confetti({
         particleCount: 100,
         spread: 70,
@@ -52,7 +51,6 @@ startBtn.addEventListener('click', () => {
     }
   }, 1000);
 
-  // ✅ Correct location for setting the multiplier interval
   multiplierInterval = setInterval(() => {
     const chance = Math.random();
 
@@ -87,7 +85,7 @@ mineBtn.addEventListener('click', () => {
 
 tweetBtn.addEventListener('click', () => {
   const tweetText = encodeURIComponent(
-    `I just mined ${allo} $ALLO tokens in 30 seconds playing the Allora Miner Game!\nTry it yourself here: https://allominer.vercel.app`
+    `I just mined ${allo} $ALLO tokens in 30 seconds playing the $ALLO Miner Game!\nTry it yourself here: https://allominer.vercel.app`
   );
   const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
   window.open(tweetUrl, '_blank');
