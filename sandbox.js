@@ -73,7 +73,7 @@ mineBtn.addEventListener('click', () => {
 
 tweetBtn.addEventListener('click', () => {
   const tweetText = encodeURIComponent(
-    `I just mined ${allo} $ALLO tokens in 30 seconds playing the Allora Miner Game! Try it yourself.`
+    `I just mined ${allo} $ALLO tokens in 30 seconds playing the Allora Miner Game! Try it yourself here : https://allominer.vercel.app`
   );
   const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
   window.open(tweetUrl, '_blank');
