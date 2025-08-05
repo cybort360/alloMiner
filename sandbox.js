@@ -16,6 +16,15 @@ let countdown = null;
 let multiplierInterval = null;
 let currentMultiplier = 1;
 
+window.addEventListener('DOMContentLoaded', () => {
+  const highScore = localStorage.getItem('highScore') || 0;
+  const highScoreElement = document.createElement('p');
+  highScoreElement.id = 'highScore';
+  highScoreElement.style.fontSize = '1.2em';
+  highScoreElement.textContent = `High Score: ${highScore} $ALLO`;
+  document.querySelector('.container').insertBefore(highScoreElement, alloCountDisplay);
+});
+
 startBtn.addEventListener('click', () => {
   allo = 0;
   timeLeft = 30;
@@ -41,7 +50,19 @@ startBtn.addEventListener('click', () => {
       clearInterval(multiplierInterval);
       mineBtn.style.display = 'none';
       tweetBtn.style.display = 'inline-block';
-      message.textContent = `Time's up! You mined ${allo} $ALLO. Tweet your score to try again.`;
+
+      const highScore = localStorage.getItem('highScore') || 0;
+
+      if (allo > highScore) {
+        localStorage.setItem('highScore', allo);
+        message.textContent = `🎉 New High Score! You mined ${allo} $ALLO.`;
+        const highScoreDisplay = document.getElementById('highScore');
+        if (highScoreDisplay) {
+          highScoreDisplay.textContent = `High Score: ${allo} $ALLO`;
+        }
+      } else {
+        message.textContent = `Time's up! You mined ${allo} $ALLO. High Score: ${highScore}`;
+      }
 
       confetti({
         particleCount: 100,
