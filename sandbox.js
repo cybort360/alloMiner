@@ -1,20 +1,26 @@
+'use strict';
+
 const startBtn = document.getElementById('startButton');
 const mineBtn = document.getElementById('clickButton');
 const tweetBtn = document.getElementById('tweetButton');
 const alloCountDisplay = document.getElementById('alloCount');
 const timerDisplay = document.getElementById('timer');
 const message = document.getElementById('message');
+const toggle = document.getElementById('themeToggle');
+const sunIcon = document.getElementById('sunIcon');
+const moonIcon = document.getElementById('moonIcon');
 
 let allo = 0;
 let timeLeft = 30;
-let countdown;
-let multiplierInterval;
+let countdown = null;
+let multiplierInterval = null;
 let currentMultiplier = 1;
 
 startBtn.addEventListener('click', () => {
   allo = 0;
   timeLeft = 30;
   currentMultiplier = 1;
+
   alloCountDisplay.textContent = `${allo} $ALLO`;
   timerDisplay.textContent = `Time left: ${timeLeft}s`;
   message.textContent = '';
@@ -22,6 +28,9 @@ startBtn.addEventListener('click', () => {
   startBtn.style.display = 'none';
   mineBtn.style.display = 'inline-block';
   tweetBtn.style.display = 'none';
+
+  clearInterval(countdown);
+  clearInterval(multiplierInterval); // Stop any running boost interval
 
   countdown = setInterval(() => {
     timeLeft--;
@@ -33,35 +42,40 @@ startBtn.addEventListener('click', () => {
       mineBtn.style.display = 'none';
       tweetBtn.style.display = 'inline-block';
       message.textContent = `Time's up! You mined ${allo} $ALLO. Tweet your score to try again.`;
+
+      // Trigger confetti
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+      });
     }
   }, 1000);
 
+  // ✅ Correct location for setting the multiplier interval
   multiplierInterval = setInterval(() => {
     const chance = Math.random();
 
     if (chance < 0.05) {
-      currentMultiplier = 5;
-      message.textContent = `⚡ SUPER BOOST! 5x Mining for 5 seconds!`;
-      mineBtn.classList.add('super-glow');
-
-      setTimeout(() => {
-        currentMultiplier = 1;
-        message.textContent = '';
-        mineBtn.classList.remove('super-glow');
-      }, 5000);
+      activateMultiplier(5, '⚡ SUPER BOOST! 5x Mining for 5 seconds!', 'super-glow');
     } else if (chance < 0.4) {
-      currentMultiplier = Math.random() < 0.5 ? 2 : 3;
-      message.textContent = `🔥 ${currentMultiplier}x Mining Boost! Click fast!`;
-      mineBtn.classList.add('glow');
-
-      setTimeout(() => {
-        currentMultiplier = 1;
-        message.textContent = '';
-        mineBtn.classList.remove('glow');
-      }, 5000);
+      const boost = Math.random() < 0.5 ? 2 : 3;
+      activateMultiplier(boost, `🔥 ${boost}x Mining Boost! Click fast!`, 'glow');
     }
   }, 4000);
 });
+
+function activateMultiplier(boostValue, boostMessage, glowClass) {
+  currentMultiplier = boostValue;
+  message.textContent = boostMessage;
+  mineBtn.classList.add(glowClass);
+
+  setTimeout(() => {
+    currentMultiplier = 1;
+    message.textContent = '';
+    mineBtn.classList.remove(glowClass);
+  }, 5000);
+}
 
 mineBtn.addEventListener('click', () => {
   allo += currentMultiplier;
@@ -73,7 +87,7 @@ mineBtn.addEventListener('click', () => {
 
 tweetBtn.addEventListener('click', () => {
   const tweetText = encodeURIComponent(
-    `I just mined ${allo} $ALLO tokens in 30 seconds playing the Allora Miner Game! Try it yourself here : https://allominer.vercel.app`
+    `I just mined ${allo} $ALLO tokens in 30 seconds playing the Allora Miner Game!\nTry it yourself here: https://allominer.vercel.app`
   );
   const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
   window.open(tweetUrl, '_blank');
@@ -83,17 +97,11 @@ tweetBtn.addEventListener('click', () => {
   timerDisplay.textContent = 'Time left: 30s';
 });
 
-// Theme toggle
-const toggle = document.getElementById('themeToggle');
-const sunIcon = document.getElementById('sunIcon');
-const moonIcon = document.getElementById('moonIcon');
-
 toggle.addEventListener('click', () => {
-  const body = document.body;
-  body.classList.toggle('dark');
-  body.classList.toggle('light');
+  document.body.classList.toggle('dark');
+  document.body.classList.toggle('light');
 
-  if (body.classList.contains('dark')) {
+  if (document.body.classList.contains('dark')) {
     sunIcon.style.display = 'none';
     moonIcon.style.display = 'inline';
   } else {
